@@ -1,0 +1,649 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Prasanth Kakarla</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout concept: a dispatch board. Hairline grid, mono coordinates, one live job that travels the whole platform. */
+:root {
+  --bg: #F2F5F9;
+  --surface: #FFFFFF;
+  --surface-2: #E9EFF6;
+  --ink: #0B1F3A;
+  --muted: #55657B;
+  --line: #D3DCE8;
+  --accent: #0A7BA6;
+  --accent-soft: #D8EDF6;
+  --on-accent: #FFFFFF;
+  --signal: #B45309;
+  --signal-soft: #FBE9D3;
+  --grid: rgba(11, 31, 58, 0.06);
+  --header-bg: rgba(242, 245, 249, 0.92);
+  --f-display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --f-body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #07111E; --surface: #0E1C2F; --surface-2: #13253D; --ink: #E7EFF8; --muted: #93A4BA;
+    --line: #1E3350; --accent: #3CC4F0; --accent-soft: #0F3247; --on-accent: #04202E;
+    --signal: #F5A524; --signal-soft: #3A2A0E; --grid: rgba(150, 190, 235, 0.07);
+    --header-bg: rgba(7, 17, 30, 0.92); color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #07111E; --surface: #0E1C2F; --surface-2: #13253D; --ink: #E7EFF8; --muted: #93A4BA;
+  --line: #1E3350; --accent: #3CC4F0; --accent-soft: #0F3247; --on-accent: #04202E;
+  --signal: #F5A524; --signal-soft: #3A2A0E; --grid: rgba(150, 190, 235, 0.07);
+  --header-bg: rgba(7, 17, 30, 0.92); color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { scroll-behavior: smooth; scroll-padding-top: 76px; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font-family: var(--f-body); font-size: 16px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--header-bg); }
+h1, h2, h3, h4 { font-family: var(--f-display); margin: 0; text-wrap: balance; letter-spacing: -0.015em; line-height: 1.1; }
+p { margin: 0; }
+a { color: var(--accent); }
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1120px; margin: 0 auto; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.mono { font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+
+/* header */
+.site-header { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20; background: var(--header-bg); backdrop-filter: blur(8px); border-bottom: 1px solid var(--line); }
+.bar { display: flex; align-items: center; gap: 20px; min-height: 56px; }
+.brand { font-family: var(--f-mono); font-weight: 500; font-size: 14px; color: var(--ink); text-decoration: none; letter-spacing: 0.04em; white-space: nowrap; }
+.brand b { color: var(--accent); font-weight: 500; }
+.nav { display: flex; gap: 2px; margin-left: auto; overflow-x: auto; scrollbar-width: none; min-width: 0; }
+.nav::-webkit-scrollbar { display: none; }
+.nav a { padding: 8px 12px; font-size: 14px; font-weight: 500; color: var(--muted); text-decoration: none; border-radius: 4px; white-space: nowrap; }
+.nav a:hover { color: var(--ink); }
+.nav a[aria-current="true"] { color: var(--ink); background: var(--surface-2); }
+.theme-btn { border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 6px 10px; font-family: var(--f-mono); font-size: 12px; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink); white-space: nowrap; }
+.theme-btn:hover { border-color: var(--accent); }
+
+/* hero */
+.hero { position: relative; border-bottom: 1px solid var(--line); background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px); background-size: 36px 36px; background-position: -1px -1px; }
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr); gap: 48px; padding-block: 72px 56px; align-items: end; }
+.hero h1 { font-size: clamp(2.9rem, 8vw, 6rem); font-weight: 800; letter-spacing: -0.035em; line-height: 0.95; margin-top: 18px; }
+.hero h1 span { color: var(--accent); }
+.hero .lead { margin-top: 24px; font-size: clamp(1.05rem, 2.2vw, 1.3rem); max-width: 34em; color: var(--ink); }
+.cta-row { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 11px 18px; border-radius: 4px; border: 1px solid var(--ink); background: transparent; color: var(--ink); font-weight: 600; font-size: 15px; text-decoration: none; transition: background .15s, color .15s, border-color .15s; }
+.btn:hover { background: var(--ink); color: var(--bg); }
+.btn.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.btn.primary:hover { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.sheet { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+.sheet-head { display: flex; justify-content: space-between; padding: 10px 16px; border-bottom: 1px solid var(--line); }
+.sheet dl { margin: 0; padding: 6px 16px 10px; }
+.sheet .row { display: grid; grid-template-columns: 96px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px dashed var(--line); font-size: 14.5px; }
+.sheet .row:last-child { border-bottom: 0; }
+.sheet dt { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+.sheet dd { margin: 0; font-weight: 500; }
+.facts { display: flex; flex-wrap: wrap; border-top: 1px solid var(--line); }
+.facts div { flex: 1 1 200px; padding: 16px 0; display: flex; gap: 12px; align-items: baseline; }
+.facts b { font-family: var(--f-display); font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; }
+.facts span { color: var(--muted); font-size: 14px; }
+
+/* sections */
+section.block { padding-block: 84px; border-bottom: 1px solid var(--line); }
+.sec-head { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 40px; align-items: end; margin-bottom: 40px; }
+.sec-head h2 { font-size: clamp(2rem, 4.6vw, 3.1rem); font-weight: 800; margin-top: 10px; }
+.sec-head p { color: var(--muted); max-width: 38em; }
+
+/* journey */
+.track { position: relative; display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 0; margin-bottom: 24px; }
+.track::before { content: ""; position: absolute; left: calc(100% / 14); right: calc(100% / 14); top: 19px; height: 2px; background: var(--line); }
+.track-fill { position: absolute; left: calc(100% / 14); top: 19px; height: 2px; background: var(--accent); width: 0; transition: width .45s ease; }
+.stop { position: relative; background: none; border: 0; padding: 0 4px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
+.stop .dot { width: 40px; height: 40px; border-radius: 50%; border: 2px solid var(--line); background: var(--bg); display: grid; place-items: center; font-family: var(--f-mono); font-size: 13px; font-weight: 500; color: var(--muted); transition: all .25s; position: relative; z-index: 1; }
+.stop .lbl { font-size: 13.5px; font-weight: 600; color: var(--muted); line-height: 1.25; }
+.stop.done .dot { border-color: var(--accent); color: var(--accent); }
+.stop.on .dot { background: var(--accent); border-color: var(--accent); color: var(--on-accent); transform: scale(1.12); }
+.stop.on .lbl { color: var(--ink); }
+.stop:hover .dot { border-color: var(--accent); }
+.ticket { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; }
+.ticket-head { display: flex; flex-wrap: wrap; gap: 10px 24px; justify-content: space-between; align-items: center; padding: 14px 20px; border-bottom: 1px dashed var(--line); }
+.ticket-head h3 { font-size: 1.7rem; font-weight: 700; }
+.ticket-ctrl { display: flex; gap: 8px; }
+.mini { border: 1px solid var(--line); background: var(--bg); border-radius: 4px; padding: 7px 12px; font-family: var(--f-mono); font-size: 12px; letter-spacing: .05em; text-transform: uppercase; }
+.mini:hover:not(:disabled) { border-color: var(--accent); }
+.mini:disabled { opacity: .4; cursor: default; }
+.mini[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.ticket-body { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.side { padding: 22px 20px 22px; }
+.side + .side { border-left: 1px solid var(--line); background: var(--surface-2); }
+.side h4 { font-family: var(--f-mono); font-size: 12px; font-weight: 500; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+.side p { font-size: 16.5px; max-width: 32em; }
+.built { padding: 16px 20px; border-top: 1px dashed var(--line); display: flex; flex-wrap: wrap; gap: 8px 8px; align-items: center; }
+.built .mono { margin-right: 6px; }
+.tag { display: inline-block; padding: 3px 10px; border: 1px solid var(--line); border-radius: 99px; font-size: 13px; font-weight: 500; background: var(--bg); }
+.fade { animation: fade .35s ease; }
+@keyframes fade { from { opacity: .0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+
+/* experience */
+.xp { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); gap: 32px; }
+.xp-list { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.xp-tab { text-align: left; background: none; border: 0; border-bottom: 1px solid var(--line); padding: 16px 14px 16px 16px; position: relative; }
+.xp-tab .t { font-family: var(--f-display); font-weight: 700; font-size: 1.12rem; display: block; }
+.xp-tab .o { color: var(--muted); font-size: 13.5px; display: block; margin-top: 2px; }
+.xp-tab[aria-selected="true"] { background: var(--surface); }
+.xp-tab[aria-selected="true"]::before { content: ""; position: absolute; left: 0; top: -1px; bottom: -1px; width: 3px; background: var(--accent); }
+.xp-tab:hover { background: var(--surface); }
+.xp-panel { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 26px 28px 28px; min-width: 0; }
+.xp-panel h3 { font-size: 1.9rem; font-weight: 800; }
+.xp-meta { display: flex; flex-wrap: wrap; gap: 6px 18px; margin-top: 8px; color: var(--muted); font-size: 14.5px; }
+.xp-meta b { color: var(--accent); font-weight: 600; }
+.xp-panel ul { margin: 20px 0 0; padding: 0; list-style: none; display: grid; gap: 14px; }
+.xp-panel li { position: relative; padding-left: 22px; max-width: 46em; }
+.xp-panel li::before { content: ""; position: absolute; left: 0; top: .72em; width: 8px; height: 2px; background: var(--accent); }
+.xp-panel li b { font-weight: 600; }
+
+/* architecture */
+.tabs { display: inline-flex; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); margin-bottom: 24px; max-width: 100%; }
+.tabs button { border: 0; background: none; padding: 10px 18px; font-weight: 600; font-size: 14.5px; color: var(--muted); border-right: 1px solid var(--line); }
+.tabs button:last-child { border-right: 0; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+.layers { display: grid; grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr); gap: 28px; }
+.stack { display: flex; flex-direction: column; gap: 0; }
+.layer { text-align: left; background: var(--surface); border: 1px solid var(--line); padding: 16px 18px; display: grid; grid-template-columns: 34px minmax(0, 1fr); gap: 12px; align-items: baseline; position: relative; }
+.layer + .layer { margin-top: 26px; }
+.layer + .layer::before { content: ""; position: absolute; left: 34px; top: -26px; height: 26px; width: 2px; background: var(--accent); }
+.layer + .layer::after { content: ""; position: absolute; left: 29px; top: -8px; border: 6px solid transparent; border-top-color: var(--accent); border-bottom: 0; }
+.layer .n { font-family: var(--f-mono); font-size: 12px; color: var(--muted); }
+.layer .k { font-family: var(--f-display); font-weight: 700; font-size: 1.15rem; display: block; }
+.layer .s { color: var(--muted); font-size: 14px; }
+.layer[aria-selected="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.layer[aria-selected="true"] .n, .layer[aria-selected="true"] .s { color: var(--bg); opacity: .78; }
+.layer:hover:not([aria-selected="true"]) { border-color: var(--accent); }
+.detail { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 26px 28px; align-self: start; min-width: 0; }
+.detail h3 { font-size: 1.6rem; font-weight: 800; }
+.detail p { margin-top: 12px; max-width: 36em; }
+.detail ul { margin: 18px 0 0; padding: 0; list-style: none; display: grid; gap: 9px; }
+.detail li { position: relative; padding-left: 22px; }
+.detail li::before { content: ""; position: absolute; left: 0; top: .72em; width: 8px; height: 2px; background: var(--accent); }
+.journey6 { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 14px; counter-reset: st; }
+.sc { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 20px 20px 18px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.sc .no { font-family: var(--f-mono); font-size: 12px; color: var(--accent); letter-spacing: .08em; }
+.sc h3 { font-size: 1.3rem; font-weight: 700; }
+.sc .sub { font-family: var(--f-mono); font-size: 11.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+.sc ul { margin: 2px 0 0; padding: 0; list-style: none; display: grid; gap: 7px; font-size: 14.5px; }
+.sc li { position: relative; padding-left: 16px; }
+.sc li::before { content: ""; position: absolute; left: 0; top: .7em; width: 7px; height: 2px; background: var(--accent); }
+.sc .plain { margin-top: auto; padding: 10px 12px; background: var(--surface-2); border-radius: 3px; font-size: 14px; font-style: italic; }
+.sc .plain .mono { display: block; font-style: normal; font-size: 10.5px; margin-bottom: 2px; }
+
+/* skills */
+.skill-tools { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin-bottom: 22px; }
+.filters { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 99px; padding: 6px 14px; font-size: 14px; font-weight: 500; }
+.chip[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+.search { margin-left: auto; border: 1px solid var(--line); background: var(--surface); color: var(--ink); border-radius: 4px; padding: 8px 12px; font: inherit; font-size: 14px; width: 220px; max-width: 100%; }
+.search::placeholder { color: var(--muted); }
+.skills { display: flex; flex-wrap: wrap; gap: 8px; }
+.sk { border: 1px solid var(--line); background: var(--surface); border-radius: 4px; padding: 9px 14px; font-weight: 600; font-size: 15px; transition: border-color .15s; }
+.sk small { display: block; font-family: var(--f-mono); font-size: 10.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 400; }
+.sk:hover { border-color: var(--accent); }
+.sk[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.sk[aria-pressed="true"] small { color: var(--on-accent); opacity: .85; }
+.sk[hidden] { display: none; }
+.skill-note { margin-top: 20px; min-height: 3.2em; padding: 14px 16px; border: 1px dashed var(--line); border-radius: 4px; color: var(--muted); }
+.skill-note b { color: var(--ink); }
+
+/* credentials */
+.certs { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px; }
+.cert { background: var(--surface); border: 1px solid var(--line); border-radius: 4px; padding: 18px; display: flex; flex-direction: column; gap: 6px; min-height: 120px; }
+.cert .mono { color: var(--accent); }
+.cert b { font-family: var(--f-display); font-size: 1.15rem; font-weight: 700; line-height: 1.2; }
+.cert span { color: var(--muted); font-size: 14px; }
+.edu { margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+
+/* connect */
+.connect { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr); gap: 40px; align-items: center; }
+.connect h2 { font-size: clamp(2.2rem, 6vw, 4rem); font-weight: 800; }
+.connect p { margin-top: 16px; color: var(--muted); max-width: 32em; }
+footer { padding-block: 28px; display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; color: var(--muted); font-size: 13.5px; }
+
+@media (max-width: 900px) {
+  .hero-grid, .sec-head, .xp, .layers, .connect { grid-template-columns: minmax(0, 1fr); }
+  .hero-grid { gap: 32px; padding-block: 48px 40px; }
+  .sec-head { gap: 12px; margin-bottom: 28px; }
+  section.block { padding-block: 60px; }
+  .journey6 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .xp-list { flex-direction: row; overflow-x: auto; border-top: 0; border-bottom: 1px solid var(--line); }
+  .xp-tab { flex: 0 0 auto; min-width: 190px; border-bottom: 0; border-right: 1px solid var(--line); }
+  .xp-tab[aria-selected="true"]::before { left: 0; right: 0; top: 0; bottom: auto; width: auto; height: 3px; }
+}
+@media (max-width: 720px) {
+  .track { grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px 0; }
+  .track::before, .track-fill { display: none; }
+  .ticket-body { grid-template-columns: minmax(0, 1fr); }
+  .side + .side { border-left: 0; border-top: 1px solid var(--line); }
+  .brand span { display: none; }
+  .search { margin-left: 0; width: 100%; }
+}
+@media (max-width: 560px) {
+  .journey6 { grid-template-columns: minmax(0, 1fr); }
+  .track { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .stop .lbl { font-size: 12px; }
+  .xp-panel, .detail { padding: 20px 18px; }
+  .sheet .row { grid-template-columns: 82px minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .fade { animation: none; }
+  .track-fill, .stop .dot { transition: none; }
+}
+</style>
+
+<header class="site-header">
+  <div class="wrap bar">
+    <a class="brand" href="#top">PK<b>/</b><span>prasanth-kakarla</span></a>
+    <nav class="nav" id="nav" aria-label="Sections">
+      <a href="#journey">Job journey</a>
+      <a href="#experience">Experience</a>
+      <a href="#architecture">Architecture</a>
+      <a href="#skills">Skills</a>
+      <a href="#credentials">Credentials</a>
+      <a href="#connect">Connect</a>
+    </nav>
+    <button class="theme-btn" id="themeBtn" type="button" aria-pressed="false">Theme</button>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div class="hero-grid">
+        <div>
+          <p class="mono">Salesforce Architect · Hyderabad, India</p>
+          <h1>Prasanth <span>Kakarla</span></h1>
+          <p class="lead">I design Field Service and Sales Cloud platforms that stay in step with SAP, from the first lead to the final invoice, including the technician working offline in between.</p>
+          <div class="cta-row">
+            <a class="btn primary" href="#journey">Follow a job through the platform</a>
+            <a class="btn" href="Prasanth_Kakarla_Resume.pdf" target="_blank" rel="noopener">Resume (PDF)</a>
+            <a class="btn" href="https://www.linkedin.com/in/prasanthkakarla" target="_blank" rel="noopener">LinkedIn</a>
+          </div>
+        </div>
+        <aside class="sheet" aria-label="Profile summary">
+          <div class="sheet-head"><span class="mono">Profile sheet</span><span class="mono">Rev. 2026</span></div>
+          <dl>
+            <div class="row"><dt>Role</dt><dd>Salesforce Architect</dd></div>
+            <div class="row"><dt>Client</dt><dd>Hitachi Global Air Power</dd></div>
+            <div class="row"><dt>Platform</dt><dd>Field Service, Service Cloud, Sales Cloud</dd></div>
+            <div class="row"><dt>Integrates</dt><dd>SAP ERP over REST</dd></div>
+            <div class="row"><dt>Regions</dt><dd>Australia and United States</dd></div>
+            <div class="row"><dt>Languages</dt><dd>English, Hindi, Telugu, Tamil</dd></div>
+          </dl>
+        </aside>
+      </div>
+      <div class="facts">
+        <div><b>10+</b><span>years working on Salesforce</span></div>
+        <div><b>2</b><span>regions, one platform</span></div>
+        <div><b>7</b><span>Salesforce and Scrum certifications</span></div>
+      </div>
+    </div>
+  </div>
+
+  <section class="block" id="journey">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="mono">Interactive</p><h2>Follow a job through the platform</h2></div>
+        <p>One example service job, from the first enquiry to the SAP invoice. Pick a stage to see what happens in Salesforce, what happens in SAP, and the parts I built.</p>
+      </div>
+      <div class="track" id="track" role="tablist" aria-label="Job stages">
+        <div class="track-fill" id="trackFill"></div>
+      </div>
+      <div class="ticket" aria-live="polite">
+        <div class="ticket-head">
+          <div><p class="mono" id="tkMeta">Example job · stage 1 of 7</p><h3 id="tkTitle">Enquiry</h3></div>
+          <div class="ticket-ctrl">
+            <button class="mini" id="prev" type="button">Back</button>
+            <button class="mini" id="next" type="button">Next stage</button>
+            <button class="mini" id="play" type="button" aria-pressed="false">Auto-play</button>
+          </div>
+        </div>
+        <div class="ticket-body" id="tkBody"></div>
+        <div class="built" id="tkBuilt"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="experience">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="mono">Experience</p><h2>Consultant to Architect</h2></div>
+        <p>On the Hitachi Global Air Power programme I moved from shaping the first integration to owning the architecture across Field Service, Sales Cloud and SAP.</p>
+      </div>
+      <div class="xp">
+        <div class="xp-list" id="xpList" role="tablist" aria-label="Roles"></div>
+        <div class="xp-panel" id="xpPanel" role="tabpanel"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="architecture">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="mono">Architecture</p><h2>How the pieces fit</h2></div>
+        <p>Two views of the same platform. The first shows the layers a field job passes through. The second follows the sales journey from lead to order.</p>
+      </div>
+      <div class="tabs" id="archTabs" role="tablist" aria-label="Architecture views">
+        <button type="button" role="tab" id="tab-fsl" aria-selected="true" data-v="fsl">Field Service × SAP</button>
+        <button type="button" role="tab" id="tab-sales" aria-selected="false" data-v="sales">Sales Cloud</button>
+      </div>
+      <div id="archFsl" class="layers">
+        <div class="stack" id="stack" role="tablist" aria-label="Platform layers" aria-orientation="vertical"></div>
+        <div class="detail" id="layerDetail" role="tabpanel"></div>
+      </div>
+      <div id="archSales" hidden>
+        <div class="journey6" id="journey6"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="skills">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="mono">Skills</p><h2>What I work with</h2></div>
+        <p>Filter by area or search by name. Select a skill to see where I have used it.</p>
+      </div>
+      <div class="skill-tools">
+        <div class="filters" id="filters" role="group" aria-label="Skill areas"></div>
+        <input class="search" id="skillSearch" type="search" placeholder="Search skills" aria-label="Search skills">
+      </div>
+      <div class="skills" id="skills-list"></div>
+      <div class="skill-note" id="skillNote" aria-live="polite">Select a skill to see how it was used on the project.</div>
+    </div>
+  </section>
+
+  <section class="block" id="credentials">
+    <div class="wrap">
+      <div class="sec-head">
+        <div><p class="mono">Credentials</p><h2>Certified and trained</h2></div>
+        <p>Architecture, Field Service, service, platform and administration certifications from Salesforce, plus a Scrum certification for how the work is delivered.</p>
+      </div>
+      <div class="certs">
+        <div class="cert"><span class="mono">Salesforce</span><b>Salesforce Architect</b><span>Solution and integration architecture</span></div>
+        <div class="cert"><span class="mono">Salesforce</span><b>Field Service Consultant</b><span>Field Service design, scheduling and mobile</span></div>
+        <div class="cert"><span class="mono">Salesforce</span><b>Platform Developer I</b><span>Apex, SOQL, Lightning components</span></div>
+        <div class="cert"><span class="mono">Salesforce</span><b>Platform App Builder</b><span>Data model, UI and automation</span></div>
+        <div class="cert"><span class="mono">Salesforce</span><b>Service Cloud Consultant</b><span>Service processes and design</span></div>
+        <div class="cert"><span class="mono">Salesforce</span><b>Administrator</b><span>Security, data quality, user support</span></div>
+                <div class="cert"><span class="mono">Scrum</span><b>Scrum Fundamentals Certified</b><span>Agile delivery</span></div>
+      </div>
+      <div class="edu">
+        <div class="cert"><span class="mono">Education</span><b>B.Tech, Electrical, Electronics and Communications Engineering</b><span>Lord's Institute of Engineering and Technology, 2004 to 2007</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="connect" style="border-bottom:0">
+    <div class="wrap connect">
+      <div>
+        <p class="mono">Connect</p>
+        <h2>Building something on Salesforce and SAP?</h2>
+        <p>The quickest way to reach me is a message on LinkedIn. I am happy to talk about Field Service, Sales Cloud and ERP integration roles.</p>
+      </div>
+      <div class="cta-row" style="margin-top:0">
+        <a class="btn primary" href="https://www.linkedin.com/in/prasanthkakarla" target="_blank" rel="noopener">Message me on LinkedIn</a>
+        <a class="btn" href="Prasanth_Kakarla_Resume.pdf" target="_blank" rel="noopener">Resume (PDF)</a>
+        <a class="btn" href="Prasanth_Kakarla_Resume_Interactive.pdf" target="_blank" rel="noopener">Interactive resume</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<div class="wrap"><footer><span>Prasanth Kakarla · Salesforce Architect</span><span>Hyderabad, India</span></footer></div>
+
+<script>
+(function () {
+  var $ = function (s, r) { return (r || document).querySelector(s); };
+  var el = function (tag, cls, html) { var e = document.createElement(tag); if (cls) e.className = cls; if (html != null) e.innerHTML = html; return e; };
+
+  /* theme */
+  var root = document.documentElement, tbtn = $('#themeBtn');
+  function currentDark() {
+    var t = root.getAttribute('data-theme');
+    if (t) return t === 'dark';
+    return window.matchMedia && matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+  function syncTheme() { tbtn.setAttribute('aria-pressed', String(currentDark())); tbtn.textContent = currentDark() ? 'Dark' : 'Light'; }
+  try { var saved = localStorage.getItem('pk-theme'); if (saved) root.setAttribute('data-theme', saved); } catch (e) {}
+  tbtn.addEventListener('click', function () {
+    var next = currentDark() ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    try { localStorage.setItem('pk-theme', next); } catch (e) {}
+    syncTheme();
+  });
+  syncTheme();
+
+  /* scrollspy */
+  var links = [].slice.call(document.querySelectorAll('#nav a'));
+  var secs = links.map(function (a) { return $(a.getAttribute('href')); });
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (e.isIntersecting) {
+          links.forEach(function (a) { a.setAttribute('aria-current', String(a.getAttribute('href') === '#' + e.target.id)); });
+        }
+      });
+    }, { rootMargin: '-45% 0px -50% 0px' });
+    secs.forEach(function (s) { if (s) io.observe(s); });
+  }
+
+  /* ---------- job journey ---------- */
+  var stages = [
+    { name: 'Enquiry', sf: 'A new lead is captured and qualified, then routed by region. On conversion it becomes an Account, a Contact and, when needed, an Opportunity.', sap: 'The Account is matched to the customer record in SAP through the SAP customer number, so both systems talk about the same customer.', built: ['Lead conversion mapping', 'Region routing (AU / US)', 'Customer number alignment'] },
+    { name: 'Quote', sf: 'The coordinator raises an ad-hoc service quote, even straight from an Account with no Opportunity, and adds lines in a shared Lightning component.', sap: 'Each line is priced live from SAP, with availability and tax returned. The result is a region-specific quote PDF stored as a Salesforce File.', built: ['Quote tax service', 'Opportunity-optional quoting', 'Regional quote PDF', 'Multi-currency pricebooks'] },
+    { name: 'Order', sf: 'The accepted quote becomes a Work Order that carries the customer PO number and the work centre.', sap: 'The Work Order is created in SAP. The right plant and sales organisation are picked automatically for the region.', built: ['Work Order sync to SAP', 'Quote to Work Order service', 'Plant and sales-org resolution'] },
+    { name: 'Parts', sf: 'Required parts are added with the correct unit of measure. Staged quantities are validated so they can never drop below what is already issued.', sap: 'SAP confirms stock and price for each part. Decimal formats and units are normalised before they reach Salesforce.', built: ['Parts request component', 'Required-parts sync', 'Availability and pricing check'] },
+    { name: 'Schedule', sf: 'Appointments are scheduled in the Dispatcher Console within service territories and operating hours. Nearby appointments are bundled into one visit.', sap: 'The work centre of the assigned resource is passed to SAP, so confirmations land on the right cost owner.', built: ['Appointment bundling policies', 'Bundle Work Order sync', 'Territory and operating hours'] },
+    { name: 'On site', sf: 'The technician works offline on the FSL mobile app: checklists, consumed parts, service report PDF and End Job. Labour and overtime are calculated per day in the site timezone.', sap: 'Returned and serialised parts are posted back to SAP, with the serial number carried end to end.', built: ['Mobile components on GraphQL', 'Sharing automation', 'Labour and overtime engine', 'Parts returns'] },
+    { name: 'Invoice', sf: 'Labour, parts and fees are assembled into a billing request. When SAP confirms, the Work Order moves to Closed - Invoiced.', sap: 'SAP creates the billing document and returns its confirmation. Order confirmations are protected so a job is never posted twice.', built: ['Billing request service', 'Order confirmation with duplicate guard', 'Integration logging'] }
+  ];
+  var idx = 0, timer = null;
+  var track = $('#track'), fill = $('#trackFill');
+  stages.forEach(function (s, i) {
+    var b = el('button', 'stop', '<span class="dot">' + (i + 1) + '</span><span class="lbl">' + s.name + '</span>');
+    b.type = 'button'; b.setAttribute('role', 'tab'); b.dataset.i = i;
+    b.addEventListener('click', function () { stopPlay(); go(i); });
+    track.appendChild(b);
+  });
+  track.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowLeft') {
+      e.preventDefault(); stopPlay();
+      go(Math.max(0, Math.min(stages.length - 1, idx + (e.key === 'ArrowRight' ? 1 : -1))));
+      track.querySelectorAll('.stop')[idx].focus();
+    }
+  });
+  function go(i) {
+    idx = i; var s = stages[i];
+    [].slice.call(track.querySelectorAll('.stop')).forEach(function (b, k) {
+      b.classList.toggle('on', k === i); b.classList.toggle('done', k < i);
+      b.setAttribute('aria-selected', String(k === i)); b.tabIndex = k === i ? 0 : -1;
+    });
+    var span = track.getBoundingClientRect().width * (stages.length - 1) / stages.length;
+    fill.style.width = (span * i / (stages.length - 1)) + 'px';
+    $('#tkMeta').textContent = 'Example job · stage ' + (i + 1) + ' of ' + stages.length;
+    $('#tkTitle').textContent = s.name;
+    var body = $('#tkBody');
+    body.innerHTML = '<div class="side fade"><h4>In Salesforce</h4><p>' + s.sf + '</p></div><div class="side fade"><h4>In SAP</h4><p>' + s.sap + '</p></div>';
+    $('#tkBuilt').innerHTML = '<span class="mono">What I built</span>' + s.built.map(function (t) { return '<span class="tag">' + t + '</span>'; }).join('');
+    $('#prev').disabled = i === 0; $('#next').disabled = i === stages.length - 1;
+  }
+  function stopPlay() { if (timer) { clearInterval(timer); timer = null; } $('#play').setAttribute('aria-pressed', 'false'); $('#play').textContent = 'Auto-play'; }
+  $('#prev').addEventListener('click', function () { stopPlay(); go(Math.max(0, idx - 1)); });
+  $('#next').addEventListener('click', function () { stopPlay(); go(Math.min(stages.length - 1, idx + 1)); });
+  $('#play').addEventListener('click', function () {
+    if (timer) { stopPlay(); return; }
+    if (idx === stages.length - 1) go(0);
+    $('#play').setAttribute('aria-pressed', 'true'); $('#play').textContent = 'Pause';
+    timer = setInterval(function () { if (idx >= stages.length - 1) { stopPlay(); return; } go(idx + 1); }, 3800);
+  });
+  window.addEventListener('resize', function () { go(idx); });
+  go(0);
+
+  /* ---------- experience ---------- */
+  var roles = [
+    { t: 'Salesforce Architect', o: 'Hitachi Global Air Power', when: 'Present', org: 'Hitachi Global Air Power · Field Service transformation', note: 'Promoted from Consultant',
+      b: [
+        '<b>Architected the FSL to SAP integration backbone:</b> Work Order creation, parts availability and pricing, customer credit checks, order confirmation, returns and billing, using Named Credentials, Queueable callouts, idempotency guards and central integration logging.',
+        '<b>Designed inbound REST APIs</b> for Assets and Locations with external-ID upserts, account scoping and FLS-safe execution, plus selective-field outbound sync so unchanged data is never overwritten.',
+        '<b>Led multi-region (AU and US) design:</b> region-scoped Flows and Apex, dynamic SAP plant and sales-org resolution, multi-currency pricebooks, US quote PDFs with live SAP tax, and quoting directly from an Account.',
+        '<b>Architecting and implementing Sales Cloud (US):</b> Lead, Account and Contact, Opportunity, Quote and Order on the same platform as FSL, with record-type scoping and region-scoped automation.',
+        '<b>Engineered the FSL mobile experience:</b> Lightning components on GraphQL wire adapters, multi-wire settle-gate patterns, offline cache fixes, and Apex managed sharing for Work Plans and Service Appointments.',
+        '<b>Configured Appointment Bundling</b> and kept bundle Work Orders in sync so bundles show correctly in the Dispatcher Console.',
+        '<b>Built a timezone-aware labour and overtime engine</b> with per-day thresholds for multi-day appointments and scheduled recalculation every 15 minutes.',
+        '<b>Release governance:</b> resolved failing Apex tests that blocked a production deployment, managed SFDX metadata, and wrote FSL AI use-case documentation for stakeholders.'
+      ] },
+    { t: 'Salesforce Consultant', o: 'Hitachi Global Air Power', when: 'Initial phase', org: 'Hitachi Global Air Power · FSL and SAP programme', note: 'First phase of the programme',
+      b: [
+        '<b>Led discovery and solution design</b> for the Field Service implementation: operating hours, service territories, Dispatcher Console and Briefcase Builder for offline use.',
+        '<b>Delivered the first SAP integration slice:</b> Work Order sync and the order-confirmation framework.',
+        '<b>Executed asset data migration</b> with Data Loader workflows and SAP equipment reconciliation.',
+        '<b>Set the reusable patterns</b> (Named Credentials, asynchronous callouts, integration logging) that the rest of the platform later adopted.'
+      ] },
+    { t: 'Salesforce Technical Engineer', o: 'Administration and support', when: 'Sep 2016 to Aug 2025', org: 'Salesforce administration and platform support', note: 'Nearly nine years on the platform',
+      b: [
+        'Administered and tuned Salesforce for day-to-day business, improving business-process performance by up to 25% through targeted configuration.',
+        'Implemented an end-to-end business intelligence framework and designed security measures and data-quality controls such as deduplication, cleansing and validation.',
+        'Wrote technical and functional specifications, tested applications against requirements, and trained and supported end users.'
+      ] },
+    { t: 'Senior Team Lead and QA Trainer', o: 'Telerx (C3i Healthcare Connections)', when: '2010 to 2016', org: 'Telerx (C3i Healthcare Connections)', note: 'Analyst to Senior Team Lead to Senior QA and Trainer',
+      b: [
+        'Led and coached teams, owned quality metrics and reported them to leadership.',
+        'Designed process training and drove productivity improvements through activity data and recommendations.',
+        'This is where the process-first, stakeholder-facing approach I use in consulting started.'
+      ] }
+  ];
+  var xi = 0, xl = $('#xpList'), xp = $('#xpPanel');
+  roles.forEach(function (r, i) {
+    var b = el('button', 'xp-tab', '<span class="t">' + r.t + '</span><span class="o">' + r.o + '</span>');
+    b.type = 'button'; b.setAttribute('role', 'tab'); b.id = 'xt' + i;
+    b.addEventListener('click', function () { showRole(i); });
+    xl.appendChild(b);
+  });
+  xl.addEventListener('keydown', function (e) {
+    var d = (e.key === 'ArrowDown' || e.key === 'ArrowRight') ? 1 : (e.key === 'ArrowUp' || e.key === 'ArrowLeft') ? -1 : 0;
+    if (d) { e.preventDefault(); showRole((xi + d + roles.length) % roles.length); $('#xt' + xi).focus(); }
+  });
+  function showRole(i) {
+    xi = i; var r = roles[i];
+    [].slice.call(xl.children).forEach(function (b, k) { b.setAttribute('aria-selected', String(k === i)); b.tabIndex = k === i ? 0 : -1; });
+    xp.setAttribute('aria-labelledby', 'xt' + i);
+    xp.innerHTML = '<div class="fade"><h3>' + r.t + '</h3><div class="xp-meta"><span>' + r.org + '</span><b>' + r.when + '</b><span>' + r.note + '</span></div><ul>' + r.b.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>';
+  }
+  showRole(0);
+
+  /* ---------- architecture ---------- */
+  var layers = [
+    { k: 'People', s: 'Who uses the platform', t: 'Experience layer', p: 'Three groups work in different tools but on the same records, so nobody re-keys data.', l: ['Technicians on the FSL mobile app, offline-capable', 'Dispatchers in the Dispatcher Console', 'Coordinators and sales users on Lightning pages'] },
+    { k: 'Salesforce', s: 'Where the logic lives', t: 'Salesforce platform', p: 'Business rules sit in Apex and Flow, with sharing and field security designed in from the start.', l: ['Apex triggers, handlers and services, with Queueable, Batch and Schedulable jobs', 'Record-triggered Flows scoped by region', 'Sharing automation and field-level security', 'Multi-currency pricebooks'] },
+    { k: 'Integration', s: 'How the two systems talk', t: 'Integration layer', p: 'Calls to SAP are asynchronous, logged and safe to retry, so a slow ERP never blocks a technician.', l: ['Named Credentials and REST, outbound and inbound', 'Idempotency flags that stop duplicate postings', 'Selective-field sync with three-state partner logic', 'Inbound Asset and Location APIs using external-ID upserts'] },
+    { k: 'SAP ERP', s: 'System of record', t: 'SAP ERP', p: 'SAP owns pricing, tax, stock and billing. Salesforce asks for the answer instead of copying the logic.', l: ['Work Orders: create and confirm', 'Parts: availability and pricing', 'Customers: credit checks', 'Billing: invoices', 'Assets and Locations: equipment and ship-to'] }
+  ];
+  var li = 0, stack = $('#stack'), ld = $('#layerDetail');
+  layers.forEach(function (L, i) {
+    var b = el('button', 'layer', '<span class="n">0' + (i + 1) + '</span><span><span class="k">' + L.k + '</span><span class="s">' + L.s + '</span></span>');
+    b.type = 'button'; b.setAttribute('role', 'tab'); b.id = 'ly' + i;
+    b.addEventListener('click', function () { showLayer(i); });
+    stack.appendChild(b);
+  });
+  stack.addEventListener('keydown', function (e) {
+    var d = e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0;
+    if (d) { e.preventDefault(); showLayer((li + d + layers.length) % layers.length); $('#ly' + li).focus(); }
+  });
+  function showLayer(i) {
+    li = i; var L = layers[i];
+    [].slice.call(stack.children).forEach(function (b, k) { b.setAttribute('aria-selected', String(k === i)); b.tabIndex = k === i ? 0 : -1; });
+    ld.setAttribute('aria-labelledby', 'ly' + i);
+    ld.innerHTML = '<div class="fade"><p class="mono">Layer ' + (i + 1) + ' of ' + layers.length + '</p><h3 style="margin-top:8px">' + L.t + '</h3><p>' + L.p + '</p><ul>' + L.l.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul></div>';
+  }
+  showLayer(1);
+
+  var sales = [
+    { t: 'Lead', sub: 'Capture and qualify', l: ['Lead capture and qualification', 'Conversion mapped to Account, Contact and Opportunity', 'Region-aware routing'], p: 'Turns enquiries into qualified sales prospects.' },
+    { t: 'Account and Contact', sub: 'Customer master data', l: ['Accounts aligned to SAP customer numbers', 'Contacts as service, quoting and billing stakeholders', 'Ship-to Locations synced from SAP'], p: 'One trusted customer record, shared with SAP.' },
+    { t: 'Opportunity', sub: 'Pipeline and forecasting', l: ['Opportunity process with record-type scoping next to FSL', 'Opportunity kept optional for quoting', 'Region-scoped Flows avoid cross-region side effects'], p: 'Tracks deals without slowing down fast service quotes.' },
+    { t: 'Quote management', sub: 'Pricing, tax and documents', l: ['Ad-hoc service quotes with live SAP pricing', 'SAP tax applied to quote lines', 'Region-specific quote PDF saved as a File'], p: 'Fast, accurate, customer-ready quotes.' },
+    { t: 'Order management', sub: 'Quote to order', l: ['Accepted quote becomes a Work Order with PO and work centre', 'Parts requests checked against SAP stock', 'Order confirmation to SAP, protected against duplicates'], p: 'Turns accepted quotes into confirmed orders.' },
+    { t: 'Fulfilment and billing', sub: 'Hand-off to FSL and SAP', l: ['Work Order flows into FSL scheduling and mobile', 'Labour, parts and fees collected into a billing request', 'SAP confirmation closes the order as invoiced'], p: 'Closes the loop from enquiry to invoice.' }
+  ];
+  var j6 = $('#journey6');
+  sales.forEach(function (s, i) {
+    var c = el('article', 'sc', '<span class="no">STEP ' + (i + 1) + ' OF 6</span><h3>' + s.t + '</h3><span class="sub">' + s.sub + '</span><ul>' + s.l.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul><div class="plain"><span class="mono">In plain English</span>' + s.p + '</div>');
+    j6.appendChild(c);
+  });
+  var tabs = [].slice.call(document.querySelectorAll('#archTabs button'));
+  function showArch(v) {
+    tabs.forEach(function (b) { b.setAttribute('aria-selected', String(b.dataset.v === v)); });
+    $('#archFsl').hidden = v !== 'fsl'; $('#archSales').hidden = v !== 'sales';
+  }
+  tabs.forEach(function (b) { b.addEventListener('click', function () { showArch(b.dataset.v); }); });
+
+  /* ---------- skills ---------- */
+  var cats = ['All', 'Platform', 'Integration', 'Architecture', 'Delivery'];
+  var skills = [
+    ['Field Service (FSL)', 'Platform', 'Scheduling, territories, operating hours, bundling and the mobile app for the HGAP programme.'],
+    ['Service Cloud', 'Platform', 'Work Orders and service processes that tie customer requests to field work.'],
+    ['Sales Cloud', 'Platform', 'Lead to order journey for the US region, running next to FSL.'],
+    ['Apex', 'Platform', 'Triggers, handlers and services, plus Queueable, Batch and Schedulable jobs for integrations and labour calculation.'],
+    ['Lightning Web Components', 'Platform', 'Mobile and desktop components for parts, service reports, End Job and quoting.'],
+    ['Flow', 'Platform', 'Record-triggered automation, scoped by region and used for sharing automation.'],
+    ['Visualforce', 'Platform', 'Region-specific quote PDF templates.'],
+    ['SOQL', 'Platform', 'Queries behind services, batch jobs and reconciliation work.'],
+    ['GraphQL wires', 'Platform', 'Wire adapters used in mobile components, including schema changes after platform upgrades.'],
+    ['Data Loader', 'Platform', 'Asset migration and SAP equipment reconciliation.'],
+    ['SAP ERP', 'Integration', 'Pricing, tax, stock, Work Orders, confirmations and billing, both directions.'],
+    ['REST APIs', 'Integration', 'Outbound calls to SAP and inbound Asset and Location endpoints.'],
+    ['Named Credentials', 'Integration', 'Secure endpoint configuration for every SAP callout.'],
+    ['Queueable and Batch', 'Integration', 'Asynchronous callouts and scheduled recalculation jobs.'],
+    ['Integration logging', 'Integration', 'A shared log so every callout can be traced and replayed.'],
+    ['Multi-region design', 'Architecture', 'One platform serving Australia and the United States, with region-scoped logic.'],
+    ['Sharing and FLS', 'Architecture', 'Apex managed sharing, field-level security and without-sharing services where needed.'],
+    ['Data migration', 'Architecture', 'Moving equipment and customer data into the platform with reconciliation against SAP.'],
+    ['Governor limits', 'Architecture', 'Bulk-safe, limit-aware design for triggers and jobs.'],
+    ['Offline and mobile', 'Architecture', 'Briefcase-based offline design and cache-safe components.'],
+    ['SFDX', 'Delivery', 'Source-driven deployments and metadata management.'],
+    ['Agile and Scrum', 'Delivery', 'Scrum Fundamentals certified, delivering in iterations.'],
+    ['Requirements', 'Delivery', 'Discovery sessions that turn field operations into platform capability.'],
+    ['Documentation', 'Delivery', 'Specifications, runbooks and stakeholder-ready deliverables.']
+  ];
+  var cat = 'All', q = '', picked = null;
+  var fl = $('#filters'), sl = $('#skills-list'), note = $('#skillNote');
+  cats.forEach(function (c) {
+    var b = el('button', 'chip', c); b.type = 'button'; b.setAttribute('aria-pressed', String(c === 'All'));
+    b.addEventListener('click', function () {
+      cat = c; [].slice.call(fl.children).forEach(function (x) { x.setAttribute('aria-pressed', String(x === b)); }); applySkills();
+    });
+    fl.appendChild(b);
+  });
+  var skEls = skills.map(function (s, i) {
+    var b = el('button', 'sk', s[0] + '<small>' + s[1] + '</small>'); b.type = 'button'; b.setAttribute('aria-pressed', 'false');
+    b.addEventListener('click', function () {
+      picked = picked === i ? null : i;
+      skEls.forEach(function (x, k) { x.setAttribute('aria-pressed', String(k === picked)); });
+      note.innerHTML = picked === null ? 'Select a skill to see how it was used on the project.' : '<b>' + s[0] + '.</b> ' + s[2];
+    });
+    sl.appendChild(b); return b;
+  });
+  function applySkills() {
+    skEls.forEach(function (b, i) {
+      var s = skills[i];
+      b.hidden = !((cat === 'All' || s[1] === cat) && (!q || s[0].toLowerCase().indexOf(q) > -1));
+    });
+  }
+  $('#skillSearch').addEventListener('input', function (e) { q = e.target.value.trim().toLowerCase(); applySkills(); });
+})();
+</script>
